@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maximilian Hollmann</title>
+<meta name="description" content="Maximilian Hollmann – persönliche Website.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#e8eef2;
+    --ink:#1f2e4d;
+    --blush:#f2a49c;
+    --font:"Bricolage Grotesque",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --edge:clamp(18px,4vw,44px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font);overflow:hidden;-webkit-font-smoothing:antialiased;transition:background-color .25s,color .25s}
+
+  header{position:fixed;top:var(--edge);left:var(--edge);z-index:2}
+  h1{font-size:clamp(26px,3.4vw,38px);font-weight:600;letter-spacing:-.025em;line-height:1.05}
+  nav{margin-top:12px;display:flex;gap:20px;font-size:16px}
+  a{color:inherit;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:4px}
+  a:hover{text-decoration-thickness:3px}
+  :focus-visible{outline:3px solid var(--ink);outline-offset:4px;border-radius:8px}
+
+  main{height:100%;display:grid;place-items:center;touch-action:none}
+  #face{width:min(82vmin,540px);height:auto;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+
+  /* Zeichenstil: Tinte auf Papier */
+  .s{stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+  .fp{fill:var(--paper)} .fi{fill:var(--ink)} .fn{fill:none} .fb{fill:var(--blush)}
+
+  .btn{font:inherit;font-size:15px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:999px;padding:8px 18px;cursor:pointer}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  #toggle{position:fixed;right:var(--edge);bottom:var(--edge);z-index:3}
+
+  .panel{position:fixed;right:var(--edge);bottom:calc(var(--edge) + 58px);width:min(290px,calc(100vw - 36px));max-height:calc(100vh - 160px);overflow:auto;
+         background:var(--paper);border:2px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--ink);padding:18px;display:grid;gap:14px;z-index:3}
+  .panel[hidden]{display:none}
+  .row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:14px;align-items:baseline}
+  .row input{grid-column:1/-1;width:100%;accent-color:var(--ink)}
+  .row output{font-variant-numeric:tabular-nums}
+  .colors{display:flex;gap:18px;font-size:14px}
+  .colors label{display:flex;align-items:center;gap:8px;cursor:pointer}
+  input[type=color]{width:28px;height:28px;border:2px solid var(--ink);border-radius:50%;padding:0;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+  input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+  input[type=color]::-webkit-color-swatch{border:none;border-radius:50%}
+  input[type=color]::-moz-color-swatch{border:none;border-radius:50%}
+  #reset{justify-self:start;font-size:14px;padding:6px 14px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Maximilian Hollmann</h1>
+  <nav>
+    <a href="https://www.linkedin.com/in/maximilian-hollmann/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="mailto:maximilian.hollmann@hhl.de">E-Mail</a>
+  </nav>
+</header>
+
+<main>
+  <svg id="face" viewBox="0 0 400 470" tabindex="0" role="img" aria-label="Gezeichnetes Porträt, das dem Mauszeiger mit Kopf und Augen folgt">
+    <defs>
+      <clipPath id="clipL"><path/></clipPath>
+      <clipPath id="clipR"><path/></clipPath>
+    </defs>
+
+    <!-- Hals und Schultern (bewegen sich nur beim Atmen) -->
+    <g id="body">
+      <path class="s fp" d="M172 330L168 445H232L228 330Z"/>
+      <path class="s fp" d="M28 495C44 428 114 410 168 405Q200 430 232 405C286 410 356 428 372 495Z"/>
+    </g>
+
+    <!-- Kopf: alles hier drin wird pro Frame neu berechnet -->
+    <g id="head">
+      <g id="earL"><path class="s fp" d="M-18-17H0C17-21 20 19 0 17H-18Z"/><path class="s fn" d="M3-7C10-6 10 6 3 7"/></g>
+      <g id="earR"><path class="s fp" d="M-18-17H0C17-21 20 19 0 17H-18Z"/><path class="s fn" d="M3-7C10-6 10 6 3 7"/></g>
+      <path id="skull" class="s fp"/>
+      <ellipse id="cheekL" class="fb" rx="15" ry="9"/>
+      <ellipse id="cheekR" class="fb" rx="15" ry="9"/>
+      <g id="eyeL">
+        <path class="lid fp"/>
+        <g clip-path="url(#clipL)"><g class="pupil"><circle class="fi" r="6.5"/><circle class="fp" r="1.9" cx="-2.2" cy="-2.3"/></g></g>
+        <path class="lid s fn"/>
+      </g>
+      <g id="eyeR">
+        <path class="lid fp"/>
+        <g clip-path="url(#clipR)"><g class="pupil"><circle class="fi" r="6.5"/><circle class="fp" r="1.9" cx="-2.2" cy="-2.3"/></g></g>
+        <path class="lid s fn"/>
+      </g>
+      <path id="browL" class="s fn" d="M-13 2Q0-6 14 3"/>
+      <path id="browR" class="s fn" d="M-13 2Q0-6 14 3"/>
+      <path id="nose" class="s fn"/>
+      <path id="mouth" class="s fi"/>
+      <path id="hair" class="s fi"/>
+    </g>
+  </svg>
+</main>
+
+<button id="toggle" class="btn" type="button" aria-expanded="false" aria-controls="panel">Einstellungen</button>
+<div id="panel" class="panel" hidden>
+  <div class="colors">
+    <label><input type="color" id="inkColor" value="#1f2e4d"> Tinte</label>
+    <label><input type="color" id="paperColor" value="#e8eef2"> Hintergrund</label>
+  </div>
+  <button id="reset" class="btn" type="button">Zurücksetzen</button>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const face = $('face'), head = $('head'), body = $('body');
+  const skull = $('skull'), hair = $('hair'), nose = $('nose'), mouth = $('mouth');
+  const part = side => ({
+    ear: $('ear' + side), cheek: $('cheek' + side), brow: $('brow' + side),
+    lids: $('eye' + side).querySelectorAll('.lid'),
+    pupil: $('eye' + side).querySelector('.pupil'),
+    eye: $('eye' + side),
+    clip: $('clip' + side).firstElementChild
+  });
+  const SIDES = [{s: -1, ...part('L')}, {s: 1, ...part('R')}];
+
+  // ---------- Grundgeometrie ----------
+  // Der Kopf ist eine gedachte Kugel. Jedes Gesichtsteil hat eine Position
+  // (Längengrad lon, Breitengrad lat, Abstand r) auf dieser Kugel.
+  const CX = 200, CY = 230, R = 108, PIVOT = CY + 140;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const DEFAULTS = {travel: 70, response: 1.8, damping: 0.55, roll: 6, hair: 1, updown: 0.6};
+  const P = {...DEFAULTS};
+
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const n2 = v => Math.round(v * 100) / 100;
+
+  // Punkt auf der Kugel drehen (yaw = links/rechts, pitch = hoch/runter) und auf den Bildschirm projizieren
+  function proj(lon, lat, r, yaw, pitch) {
+    const rr = R * r, cl = Math.cos(lat);
+    const x = rr * cl * Math.sin(lon), y = rr * Math.sin(lat), z = rr * cl * Math.cos(lon);
+    const ca = Math.cos(yaw), sa = Math.sin(yaw);
+    const x1 = x * ca + z * sa, z1 = -x * sa + z * ca;
+    const cb = Math.cos(pitch), sb = Math.sin(pitch);
+    return {x: CX + x1, y: CY + y * cb + z1 * sb};
+  }
+
+  // Kopfumriss: oben eine feste Rundung, Kinn und Kiefer verformen sich mit der Drehung
+  function skullPath(yaw, pitch) {
+    const s = Math.sin(yaw), k = n2(0.5523 * R);
+    const chinX = CX + s * R * 0.5, chinY = CY + 128 - Math.sin(pitch) * 16;
+    const hR = 62 * (1 - 0.6 * s), hL = 62 * (1 + 0.6 * s);
+    const jR = CY + 70 * (1 - 0.25 * s), jL = CY + 70 * (1 + 0.25 * s);
+    return `M${CX - R} ${CY}C${CX - R} ${CY - k} ${CX - k} ${CY - R} ${CX} ${CY - R}` +
+           `C${CX + k} ${CY - R} ${CX + R} ${CY - k} ${CX + R} ${CY}` +
+           `C${CX + R} ${n2(jR)} ${n2(chinX + hR)} ${n2(chinY)} ${n2(chinX)} ${n2(chinY)}` +
+           `C${n2(chinX - hL)} ${n2(chinY)} ${CX - R} ${n2(jL)} ${CX - R} ${CY}Z`;
+  }
+
+  // Haare: Außenkontur bleibt fast stehen, der Pony "wickelt" sich um die Kugel
+  const FRINGE = [1.4, 1.02, 0.62, 0.21, -0.2, -0.61, -1.01, -1.4];
+  const TUFT = [22, 34, 28, 36, 30, 34, 22];
+  function hairPath(yaw, pitch) {
+    const wy = yaw * P.hair, wp = pitch * Math.min(1, P.hair);
+    const pts = FRINGE.map(l => proj(clamp(l + wy, -1.5, 1.5), -0.62, 1.05, 0, wp));
+    const sx = Math.sin(yaw) * R * 0.1 * P.hair;
+    const top = CY - R - 28 + Math.sin(pitch) * R * 0.08;
+    let d = `M${CX - R - 7} ${CY - 18}C${CX - R - 14} ${CY - 96} ${n2(CX - 72 + sx)} ${n2(top)} ${n2(CX + sx)} ${n2(top)}` +
+            `C${n2(CX + 72 + sx)} ${n2(top)} ${CX + R + 14} ${CY - 96} ${CX + R + 7} ${CY - 18}` +
+            `L${n2(pts[0].x)} ${n2(pts[0].y)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1];
+      d += `Q${n2((a.x + b.x) / 2)} ${n2((a.y + b.y) / 2 + TUFT[i])} ${n2(b.x)} ${n2(b.y)}`;
+    }
+    return d + 'Z';
+  }
+
+  // Auge als Mandelform; u = Oberlid, l = Unterlid (Blinzeln = Oberlid fällt aufs Unterlid)
+  function eyePath(fx, fy, u, l) {
+    const a = n2(15 * fx), b = n2(9 * fx), U = n2(u * fy), L = n2(l * fy);
+    return `M${-a} 0C${-b} ${U} ${b} ${U} ${a} 0C${b} ${L} ${-b} ${L} ${-a} 0Z`;
+  }
+
+  // ---------- Federn: der Kern des "lebendigen" Gefühls ----------
+  const spring = () => ({x: 0, v: 0});
+  const S = {yaw: spring(), pitch: spring(), gx: spring(), gy: spring(), joy: spring(), excite: spring(), boop: spring()};
+  function step(sp, target, freq, zeta, h) {
+    const w = 2 * Math.PI * freq;
+    sp.v += (w * w * (target - sp.x) - 2 * zeta * w * sp.v) * h;
+    sp.x += sp.v * h;
+  }
+
+  // ---------- Eingabe ----------
+  const ptr = {x: 0, y: 0, has: false, last: -1e9, t: 0, speed: 0};
+  const fc = {x: innerWidth / 2, y: innerHeight / 2, r: 150};
+  function measure() {
+    const r = face.getBoundingClientRect();
+    fc.x = r.left + r.width * CX / 400;
+    fc.y = r.top + r.height * CY / 470;
+    fc.r = r.width * R / 400;
+  }
+  addEventListener('resize', measure);
+
+  function track(e) {
+    const now = performance.now();
+    if (ptr.has) {
+      const v = Math.hypot(e.clientX - ptr.x, e.clientY - ptr.y) / Math.max(1, now - ptr.t);
+      ptr.speed = ptr.speed * 0.7 + v * 0.3;
+    }
+    ptr.x = e.clientX; ptr.y = e.clientY; ptr.has = true; ptr.last = now; ptr.t = now;
+  }
+  addEventListener('pointermove', track, {passive: true});
+  addEventListener('pointerdown', track, {passive: true});
+  addEventListener('mouseout', e => { if (!e.relatedTarget) ptr.last = -1e9; });
+
+  // Antippen = kleiner Stups
+  function boop() { S.boop.v += 22; S.joy.v += 4; blinkNow(performance.now()); }
+  face.addEventListener('pointerdown', boop);
+  face.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); boop(); }
+  });
+
+  // ---------- Kleine Lebenszeichen ----------
+  const blink = {start: -1e9, second: 0, next: performance.now() + rand(1500, 4000)};
+  function blinkNow(now) { if (now - blink.start > 220) blink.start = now; }
+  function blinkAmount(now) {
+    const d = now - blink.start;
+    return d < 0 || d > 170 ? 0 : Math.sin(d / 170 * Math.PI);
+  }
+  const idle = {x: 0, y: 0, next: 0};
+  const jitter = {x: 0, y: 0, next: 0};
+  let prevGaze = {x: 0, y: 0};
+
+  // ---------- Animationsschleife ----------
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
+    const maxYaw = 0.12 + P.travel / 100 * 0.62;
+    const maxPitch = maxYaw * P.updown;
+    const active = ptr.has && now - ptr.last < 2600;
+
+    let gx = 0, gy = 0, joyT = 0.1;
+    if (active) {
+      const dx = ptr.x - fc.x, dy = ptr.y - fc.y;
+      gx = Math.tanh(dx / (innerWidth * 0.5) * 1.7);
+      gy = Math.tanh(dy / (innerHeight * 0.5) * 1.7);
+      joyT = clamp(1 - Math.hypot(dx, dy) / (fc.r * 1.8), 0, 1);
+    } else if (!reduced) {
+      // Ohne Maus schaut er sich selbst um
+      if (now > idle.next) { idle.x = rand(-0.6, 0.6); idle.y = rand(-0.35, 0.3); idle.next = now + rand(900, 3000); }
+      gx = idle.x; gy = idle.y;
+    }
+
+    // Bei großen Blicksprüngen blinzeln Menschen oft
+    if (Math.hypot(gx - prevGaze.x, gy - prevGaze.y) > 0.45 && Math.random() < 0.5) blinkNow(now);
+    prevGaze = {x: gx, y: gy};
+
+    if (now > blink.next) {
+      blinkNow(now);
+      if (Math.random() < 0.18) blink.second = now + 240;
+      blink.next = now + rand(1800, 5200);
+    }
+    if (blink.second && now >= blink.second) { blinkNow(now); blink.second = 0; }
+
+    if (!reduced && now > jitter.next) {
+      jitter.x = rand(-0.7, 0.7); jitter.y = rand(-0.5, 0.5); jitter.next = now + rand(250, 900);
+    }
+
+    ptr.speed *= Math.exp(-dt * 6);
+    const exciteT = active ? clamp((ptr.speed - 1.0) / 2.2, 0, 1) : 0;
+
+    // Mehrere kleine Schritte halten die Federn stabil
+    const n = Math.max(1, Math.ceil(dt / 0.004)), h = dt / n;
+    const eyeF = Math.min(9, P.response * 2.6 + 2);
+    for (let i = 0; i < n; i++) {
+      step(S.yaw, gx * maxYaw, P.response, P.damping, h);
+      step(S.pitch, gy * maxPitch, P.response, P.damping, h);
+      step(S.gx, gx, eyeF, 0.9, h);   // Augen sind schneller als der Kopf
+      step(S.gy, gy, eyeF, 0.9, h);
+      step(S.joy, joyT, 1.6, 0.9, h);
+      step(S.excite, exciteT, 2.5, 0.8, h);
+      step(S.boop, 0, 3.2, 0.3, h);
+    }
+
+    render(now, maxYaw, maxPitch);
+    requestAnimationFrame(frame);
+  }
+
+  function render(now, maxYaw, maxPitch) {
+    const yaw = S.yaw.x, pitch = S.pitch.x;
+    const yawN = yaw / maxYaw, pitchN = maxPitch > 0.001 ? pitch / maxPitch : 0;
+    const joy = clamp(S.joy.x, 0, 1.4), ex = clamp(S.excite.x, 0, 1.2), b = clamp(S.boop.x, -1.2, 1.2);
+    const t = now / 1000;
+    const breath = reduced ? 0 : Math.sin(t * 1.55);
+    const bl = blinkAmount(now);
+
+    // Ganzer Kopf: Atmen, Neigung (roll), Stups-Quetschung
+    const roll = P.roll * clamp(yawN, -1.3, 1.3) + (reduced ? 0 : Math.sin(t * 0.37) * 0.6);
+    head.setAttribute('transform',
+      `translate(0 ${n2(breath * 1.8)}) rotate(${n2(roll)} ${CX} ${PIVOT}) ` +
+      `translate(${CX} ${PIVOT}) scale(${n2(1 + b * 0.05)} ${n2(1 - b * 0.05)}) translate(${-CX} ${-PIVOT})`);
+    body.setAttribute('transform', `translate(0 ${n2(breath * 0.9)})`);
+
+    skull.setAttribute('d', skullPath(yaw, pitch));
+    hair.setAttribute('d', hairPath(yaw, pitch));
+
+    // Augenlider und Pupillen
+    const uOpen = -11 - ex * 2.5 + joy * 4.5;
+    const l = 10 - joy * 4;
+    const u = uOpen + (l - uOpen) * bl;
+    const pxN = clamp(0.45 * S.gx.x + 0.9 * (S.gx.x - yawN), -1, 1);
+    const pyN = clamp(0.45 * S.gy.x + 0.9 * (S.gy.x - pitchN), -1, 1);
+    const fy = clamp(Math.cos(pitch - 0.02) / Math.cos(0.02), 0.6, 1.1);
+    const raise = ex * 6 + clamp(-pitchN, 0, 1) * 3 + joy * 1.5 - bl * 2;
+    const earShift = -Math.sin(yaw) * R * 0.12, earY = CY + 8 - Math.sin(pitch) * R * 0.15;
+
+    for (const p of SIDES) {
+      const s = p.s;
+
+      p.ear.setAttribute('transform', `translate(${n2(CX + s * (R - 2) + earShift)} ${n2(earY)})${s < 0 ? ' scale(-1 1)' : ''}`);
+
+      const eLon = 0.38 * s;
+      const e = proj(eLon, -0.02, 1, yaw, pitch);
+      const fx = clamp(Math.cos(eLon + yaw) / Math.cos(eLon), 0.35, 1.15);
+      const d = eyePath(fx, fy, u, l);
+      p.eye.setAttribute('transform', `translate(${n2(e.x)} ${n2(e.y)})`);
+      p.lids.forEach(el => el.setAttribute('d', d));
+      p.clip.setAttribute('d', d);
+      p.pupil.setAttribute('transform',
+        `translate(${n2((pxN * 6 + jitter.x) * fx)} ${n2(pyN * 3 + jitter.y + bl * 3)}) scale(${n2(0.55 + 0.45 * fx)} 1)`);
+
+      const br = proj(0.4 * s, -0.29, 1.02, yaw, pitch);
+      const bfx = clamp(Math.cos(0.4 * s + yaw) / Math.cos(0.4), 0.35, 1.15);
+      p.brow.setAttribute('transform', `translate(${n2(br.x)} ${n2(br.y - raise)}) scale(${n2(bfx * s)} 1)`);
+
+      const ch = proj(0.62 * s, 0.36, 1, yaw, pitch);
+      const cfx = clamp(Math.cos(0.62 * s + yaw) / Math.cos(0.62), 0.15, 1.3);
+      p.cheek.setAttribute('cx', n2(ch.x));
+      p.cheek.setAttribute('cy', n2(ch.y));
+      p.cheek.setAttribute('rx', n2(15 * cfx));
+      p.cheek.style.opacity = n2(clamp((0.25 + joy * 0.55) * Math.min(1, cfx / 0.4), 0, 0.85));
+    }
+
+    // Nase: die Spitze steht weiter vor als der Rest und bewegt sich deshalb stärker
+    const baseLon = -0.14 * Math.tanh(yaw * 6 + 0.4);
+    const n1 = proj(0, 0.07, 1.0, yaw, pitch);
+    const tip = proj(0, 0.3, 1.17, yaw, pitch);
+    const bc = proj(0, 0.37, 1.11, yaw, pitch);
+    const base = proj(baseLon, 0.37, 1.03, yaw, pitch);
+    nose.setAttribute('d', `M${n2(n1.x)} ${n2(n1.y)}L${n2(tip.x)} ${n2(tip.y)}Q${n2(bc.x)} ${n2(bc.y)} ${n2(base.x)} ${n2(base.y)}`);
+
+    // Mund: Lächeln bei Nähe, offen bei schnellen Bewegungen
+    const open = clamp(ex * 0.8 + Math.max(0, b) * 0.3, 0, 1);
+    const smile = 0.1 + joy * 0.3 + Math.max(0, b) * 0.1;
+    const mw = 0.25 + joy * 0.08 - open * 0.06, ml = 0.7;
+    const mL = proj(-mw, ml, 1, yaw, pitch), mR = proj(mw, ml, 1, yaw, pitch);
+    const mU = proj(0, ml + smile, 1, yaw, pitch), mD = proj(0, ml + smile + open * 0.42, 1, yaw, pitch);
+    mouth.setAttribute('d',
+      `M${n2(mL.x)} ${n2(mL.y)}Q${n2(mU.x)} ${n2(mU.y)} ${n2(mR.x)} ${n2(mR.y)}Q${n2(mD.x)} ${n2(mD.y)} ${n2(mL.x)} ${n2(mL.y)}Z`);
+  }
+
+  // ---------- Einstellungen ----------
+  const panel = $('panel'), toggle = $('toggle');
+  const SLIDERS = [
+    ['travel', 'Reichweite', 0, 100, 1, 0],
+    ['response', 'Reaktion', 0.5, 4, 0.05, 2],
+    ['damping', 'Dämpfung', 0.2, 1.2, 0.01, 2],
+    ['roll', 'Neigung', 0, 15, 0.5, 1],
+    ['hair', 'Haare', 0, 1.6, 0.05, 2],
+    ['updown', 'Auf und ab', 0, 1, 0.01, 2],
+  ];
+  const syncers = [];
+  for (const [key, label, min, max, stepSize, dec] of SLIDERS) {
+    const row = document.createElement('label');
+    row.className = 'row';
+    row.innerHTML = `<span>${label}</span><output></output><input type="range" min="${min}" max="${max}" step="${stepSize}">`;
+    const input = row.querySelector('input'), out = row.querySelector('output');
+    const sync = () => { input.value = P[key]; out.textContent = Number(P[key]).toFixed(dec); };
+    input.addEventListener('input', () => { P[key] = +input.value; out.textContent = Number(P[key]).toFixed(dec); });
+    sync();
+    syncers.push(sync);
+    panel.insertBefore(row, panel.querySelector('.colors'));
+  }
+
+  const inkColor = $('inkColor'), paperColor = $('paperColor');
+  const rootStyle = document.documentElement.style;
+  inkColor.addEventListener('input', () => rootStyle.setProperty('--ink', inkColor.value));
+  paperColor.addEventListener('input', () => rootStyle.setProperty('--paper', paperColor.value));
+
+  $('reset').addEventListener('click', () => {
+    Object.assign(P, DEFAULTS);
+    syncers.forEach(f => f());
+    inkColor.value = '#1f2e4d'; paperColor.value = '#e8eef2';
+    rootStyle.removeProperty('--ink'); rootStyle.removeProperty('--paper');
+  });
+
+  toggle.addEventListener('click', () => {
+    const open = panel.hidden;
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  measure();
+  requestAnimationFrame(t => { last = t; frame(t); });
+})();
+</script>
+</body>
+</html>
